@@ -5,21 +5,36 @@ const App: React.FC = () => {
   const [keyboard, setKeyboard] = useState(keyboardUtil)
 
   useEffect(() => {
-    document.addEventListener('keydown', (e) => {
-      const key = e.key.toUpperCase()
+    const handleKeypress = (e: KeyboardEvent) => {
+      e.preventDefault()
 
+      const key = e.key
       console.log(key)
 
-      const newKeyboard = keyboardUtil
-      newKeyboard.TKL.forEach((row) => {
-        row.forEach((k) => {
-          if (k.key === key) {
-            k.active = true
-          }
+      setKeyboard((prev) => {
+        const newKeyboard = { ...prev }
+
+        newKeyboard.TKL.forEach((row) => {
+          row.forEach((k) => {
+            if (k.key === key) {
+              k.active = true
+
+              k.clicking = true
+              setTimeout(() => {
+                k.clicking = false
+              }, 100)
+            }
+          })
         })
+
+        return newKeyboard
       })
-      setKeyboard(newKeyboard)
-    })
+    }
+
+    document.addEventListener('keydown', (e) => handleKeypress(e))
+
+    return () =>
+      document.removeEventListener('keydown', (e) => handleKeypress(e))
   }, [])
 
   return (
@@ -34,7 +49,13 @@ const App: React.FC = () => {
               return (
                 <div
                   key={index}
-                  className={`${key.active ? 'bg-sky-400' : 'bg-gray-400'} p-4`}
+                  className={`${
+                    key.clicking
+                      ? 'bg-sky-200'
+                      : key.active
+                      ? 'bg-sky-400'
+                      : 'bg-gray-400'
+                  } p-4`}
                 >
                   {key.key}
                 </div>
