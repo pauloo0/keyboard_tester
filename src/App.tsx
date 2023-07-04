@@ -8,21 +8,20 @@ const App: React.FC = () => {
     const handleKeypress = (e: KeyboardEvent) => {
       e.preventDefault()
 
-      const key = e.key
-      console.log(key)
+      const key = e.key.toUpperCase()
 
       setKeyboard((prev) => {
         const newKeyboard = { ...prev }
 
         newKeyboard.TKL.forEach((row) => {
           row.forEach((k) => {
-            if (k.key === key) {
+            if (k.key.toUpperCase() === key) {
               k.active = true
 
               k.clicking = true
               setTimeout(() => {
                 k.clicking = false
-              }, 100)
+              }, 50)
             }
           })
         })
@@ -49,13 +48,7 @@ const App: React.FC = () => {
               return (
                 <div
                   key={index}
-                  className={`${
-                    key.clicking
-                      ? 'bg-sky-200'
-                      : key.active
-                      ? 'bg-sky-400'
-                      : 'bg-gray-400'
-                  } p-4`}
+                  className={`${key.active ? 'bg-sky-400' : 'bg-gray-400'} p-4`}
                 >
                   {key.key}
                 </div>
